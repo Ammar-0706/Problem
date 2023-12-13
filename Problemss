@@ -1,0 +1,36 @@
+name: Simple Tasks2
+on: workflow_dispatch
+jobs:
+  TASK1:
+    name: Checkout github branch
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+      - name: Checkout new branch
+        run: git checkout -b Task1branch
+  TASK2:
+    name: Creating Dummy files
+    needs: TASK1
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create dummy text file
+        run: echo "Hello world !!" > Task2dummy.txt
+  TASK3:
+    name: Set some variable and print the same variable.
+    needs: TASK2
+    runs-on: ubuntu-latest
+    env: 
+      Variable1 : "Hello World"
+    outputs:
+      output1: ${{env.Variable1}}
+    steps:
+      - name: Print the same variable.
+        run: echo "$Variable1"
+  TASK4:
+    name: Use the task3 generate variable name to print in task4
+    needs: TASK3
+    runs-on: ubuntu-latest
+    steps:
+      - name: Printing task3 variable in task4
+        run: echo "${{needs.TASK3.outputs.output1}}"
